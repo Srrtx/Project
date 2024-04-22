@@ -52,6 +52,8 @@ app.get("/room/:orderingID", function (req, res) {
         res.json(results);
     });
 });
+const { Ordering, Product, OrderingDetail } = require('./models'); // Update the path as per your project structure
+
 
 
 app.get("/Register", function (req, res) {
