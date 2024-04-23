@@ -149,27 +149,39 @@ app.get("/user/product", function (req, res) {
 // });
 
 app.post("/user/bookings", function (req, res, next) {
-  connection.query(
-    `
+  const { booking_id, room_id, user_id, date, time_slot, status, approver_id } = req.body;
+
+  // Validate required fields
+  if (!booking_id || !room_id || !user_id || !date || !time_slot || !status || !approver_id) {
+    return res.status(400).json({ error: "Missing required fields" });
+  }
+
+  // Validate data types
+  if (typeof booking_id !== "number" || typeof room_id !== "number" || typeof user_id !== "number" || typeof approver_id !== "number") {
+    return res.status(400).json({ error: "Invalid data types for numeric fields" });
+  }
+
+  // Perform database insertion
+  const sql = `
     INSERT INTO bookings 
       (booking_id, room_id, user_id, date, time_slot, status, approver_id) 
     VALUES 
-      (?, ?, ?, CURRENT_DATE(), ?, ?, ?)
-  `,
-    [
-      req.body.booking_id,
-      req.body.room_id,
-      req.body.user_id,
-      req.body.date,
-      req.body.time_slot,
-      req.body.status,
-      req.body.approver_id,
-    ],
-    function (err, results) {
-      res.json(results);
+      (?, ?, ?, ?, ?, ?, ?)
+  `;
+  const values = [booking_id, room_id, user_id, date, time_slot, status, approver_id];
+
+  connection.query(sql, values, function (err, results) {
+    if (err) {
+      console.error("Error inserting booking:", err);
+      return res.status(500).json({ error: "Database error" });
     }
-  );
+
+    // Successful insertion
+    res.status(201).json({ message: "Booking created successfully", booking: results });
+  });
 });
+
+
 
 app.get("/Register", function (req, res) {
   res.sendFile(path.join(__dirname, "Registor.html"));
