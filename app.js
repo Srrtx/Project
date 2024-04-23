@@ -121,9 +121,41 @@ app.get("/user/product", function (req, res) {
   });
 });
 
-app.post("/bookings", function (req, res, next) {
-  connect.query(
-    "INSERT INTO  `bookings`( `booking_id `, `room_id `, `user_id `, `date `, `time_slot `, `status `, `approver_id `) VALUES(?, ?, ?, CURRENT_DATE, ?, 2)",
+// app.post("/user/bookings", function (req, res, next) {
+//   const sql = `
+//     INSERT INTO bookings
+//       (booking_id, room_id, user_id, date, time_slot, status, approver_id)
+//     VALUES
+//       (?, ?, ?, CURRENT_DATE(), ?, ?, ?)
+//   `;
+//   const values = [
+//     req.body.booking_id,
+//     req.body.room_id,
+//     req.body.user_id,
+//     req.body.date,
+//     req.body.time_slot,
+//     req.body.status,
+//     req.body.approver_id,
+//   ];
+//   connect.query(sql, values, function (err, result) {
+//     if (err) {
+//       console.error("Error inserting booking:", err); // Log the error message
+//       return res.status(500).json({ error: "Failed to insert booking" });
+//     }
+
+//     // Return the inserted booking result
+//     res.json(result);
+//   });
+// });
+
+app.post("/user/bookings", function (req, res, next) {
+  connection.query(
+    `
+    INSERT INTO bookings 
+      (booking_id, room_id, user_id, date, time_slot, status, approver_id) 
+    VALUES 
+      (?, ?, ?, CURRENT_DATE(), ?, ?, ?)
+  `,
     [
       req.body.booking_id,
       req.body.room_id,
@@ -133,8 +165,8 @@ app.post("/bookings", function (req, res, next) {
       req.body.status,
       req.body.approver_id,
     ],
-    function (err, result) {
-      res.json(result);
+    function (err, results) {
+      res.json(results);
     }
   );
 });
