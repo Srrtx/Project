@@ -73,10 +73,6 @@ app.get("/user/order", function (req, res) {
 
 // Request to book a room, time slot, write details
 app.post("/user/booking", function (req, res) {
-  //   let sql =
-  //     "INSERT INTO bookings(booking_id,room_id,user_id,date,time_slot,status,approver_id) VALUES(?, ?, ?, CURRENT_DATE, ?, 2)";
-
-  // Insert booking into the `Bookings` table
   const bookingSql =
     "INSERT INTO Bookings (user_id, room_id, date, time_slot, status) VALUES ?";
   const bookingValues = rooms.map((room) => {
